@@ -20,6 +20,6 @@ void sendPacketDHCP(enum dhcp_msg_type type, int sock, struct dhcp_msg* message)
 	serverAddr.sin_port = htons(68);
 	
 	if (sendto(sock,message, sizeof(*message), 0, (struct sockaddr *) &serverAddr, sizeof(serverAddr)) < 0) {
-		error_message("Send failed\n");
+		error_message("sendPacketDHCP(): Send packet failed");
 	}
 }

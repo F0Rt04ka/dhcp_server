@@ -56,7 +56,6 @@ int main(int argc, char const *argv[])
 
                 writeIpLease(getLeaseDataFromDhcpHeader(message->hdr));
                 sendPacketDHCP(DHCP_ACK, sockDesc, message);
-
             break;
         }
 

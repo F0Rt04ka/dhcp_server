@@ -1,13 +1,13 @@
 #include "custom_function.h"
 
-// create lease structure from dhcp header
+// Create lease structure from dhcp header
 struct lease * getLeaseDataFromDhcpHeader(struct dhcp_header header)
 {
+    struct in_addr addr;
     struct lease* ipLease;
+    
     ipLease = (struct lease*) malloc(sizeof(struct lease));
     memset(ipLease, 0, sizeof(struct lease));
-
-    struct in_addr addr;
 
     if (header.ciaddr != 0) {
         addr.s_addr = header.ciaddr;

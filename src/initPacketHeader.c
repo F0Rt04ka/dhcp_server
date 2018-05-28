@@ -2,25 +2,21 @@
 
 int length = 0;
 
-struct in_addr getMyIpAddr()    
+struct in_addr getMyIpAddr()
 {          
 	int sock;
 	struct sockaddr_in sin;
 	struct ifreq ifr;
 
-	sock = socket(AF_INET, SOCK_DGRAM, 0);
-	if (sock == -1) {
-			perror("socket");
-			exit(1);
+	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
+			exit_error("getMyIpAddr(): socket() error");
 	}
 
 	strncpy(ifr.ifr_name, USED_INTERFACE, 16);
 	ifr.ifr_name[16 - 1] = 0;
 
-	if (ioctl(sock, SIOCGIFADDR, &ifr) < 0)
-	{
-			perror("ioctl");
-			exit(1);
+	if (ioctl(sock, SIOCGIFADDR, &ifr) < 0) {
+			exit_error("getMyIpAddr(): ioctl() error");
 	}
 
 	memcpy(&sin, &ifr.ifr_addr, sizeof(sin));
@@ -32,6 +28,7 @@ void addopt1(struct dhcp_msg *packet) // Subnet Mask
 {
 	packet->option[length] = 0x01 ;
 	packet->option[length+1] = 0x04;
+	// 255.255.255.0
 	packet->option[length+2] = 0xff;
 	packet->option[length+3] = 0xff;
 	packet->option[length+4] = 0xff;
@@ -104,26 +101,6 @@ void addopt54(struct dhcp_msg *packet) // DHCP Server identifier
 	length += 6;
 }
 
-// void addopt55(struct dhcp_msg *packet) // Only for client
-// {	
-// 	packet->option[length] = 0x37;
-// 	packet->option[length+1] = 0x0c;
-// 	packet->option[length+2] = 0x01;
-// 	packet->option[length+3] = 0x0f;
-// 	packet->option[length+4] = 0x03;
-// 	packet->option[length+5] = 0x06;
-// 	packet->option[length+6] = 0x2c;
-// 	packet->option[length+7] = 0x2e;
-// 	packet->option[length+8] = 0x2f;
-// 	packet->option[length+9] = 0x1f;
-// 	packet->option[length+10] = 0x21;
-// 	packet->option[length+11] = 0x79;
-// 	packet->option[length+12] = 0xf9;
-// 	packet->option[length+13] = 0x2b;
-
-// 	length += 14;
-// }
-
 void addopt58(struct dhcp_msg *packet) // Renewal Time Value
 {	
 	packet->option[length] = 0x3a;
@@ -147,19 +124,6 @@ void addopt59(struct dhcp_msg *packet) // Rebinding Time Value
 
 	length += 6;
 }
-
-// void addopt60(struct dhcp_msg *packet) // Only for client
-// {
-// 	packet->option[length] = 0x3c;
-// 	packet->option[length+1] = 0x05;
-// 	packet->option[length+2] = 0x20;
-// 	packet->option[length+3] = 0x14;
-// 	packet->option[length+4] = 0x21;
-// 	packet->option[length+5] = 0x32;
-// 	packet->option[length+6] = 0x79;
-
-// 	length += 7;
-// }
 
 void addopt255(struct dhcp_msg *packet) // End
 {	
@@ -221,7 +185,7 @@ void initPacketHeader(struct dhcp_msg *packet, uint8_t type)
 			break;
 
         default:
-        exit_error("initPacketHeader(): Unknown packet type");
+        	exit_error("initPacketHeader(): Unknown packet type");
 	}
 
     addopt255(packet);
