@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -g3 -Wall -Iinclude
-SRCS = main.c $(wildcard src/*.c)
+SRCS = $(wildcard src/*.c)
 OBJS = $(addprefix obj/,$(SRCS:.c=.o))
 # .SUFFIXES: .c .o
 
