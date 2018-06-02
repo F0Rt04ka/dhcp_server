@@ -9,7 +9,7 @@ void sendPacketDHCP(enum dhcp_msg_type type, int sock, struct dhcp_msg* message)
 	memset(&serverAddr, 0, sizeof(serverAddr));
 	serverAddr.sin_family = AF_INET;
 	
-	if (type == DHCP_INFORM) {
+	if (type == DHCP_IACK) {
 		serverAddr.sin_addr.s_addr = message->hdr.yiaddr;
 	} else if (type == DHCP_REQUEST && message->hdr.ciaddr != 0) {
 		serverAddr.sin_addr.s_addr = message->hdr.ciaddr;
